@@ -2,9 +2,7 @@ import rhinoscriptsyntax as rs
 import scriptcontext as sc
 import Rhino
 #from math import sin, cos
-import sys
-sys.path.append(r'L:\4b_Applied Computing\03_Rhino\12_EnneadTab for Rhino\Source Codes\lib')
-import EA_UTILITY as EA
+
 
 def make_sample_blocks():
     #rs.TextOut( str(rs.GroupNames()))
@@ -29,44 +27,32 @@ def make_sample_blocks():
     crv_segs = rs.ExplodeCurves(base_crv)
 
     #temporartyly set project osnap on to prevent flipping on X axis base line
-    #original_project_osnap_status = rs.ProjectOsnaps()
-    #rs.ProjectOsnaps(enable = True)
+    original_project_osnap_status = rs.ProjectOsnaps()
+    rs.ProjectOsnaps(enable = True)
 
     collection = []
     print crv_segs
     for seg in crv_segs:
         count = rs.CurveLength(seg) / W
         pts_on_seg = rs.DivideCurve(seg, count, create_points = False)
-        if rs.IsCurveClosed(seg):
-            pts_on_seg.append(pts_on_seg[0])
 
-
+        
         for i in range(len(pts_on_seg) - 1):
             x0 = pts_on_seg[i]
             print x0
             x1 = pts_on_seg[i + 1]
             param = rs.CurveClosestPoint(seg, x0)
             tangent = rs.CurveTangent(seg, param)
-            #print "tagent = {}".format(tangent)
+            print "tagent = {}".format(tangent)
             side_vector = rs.VectorRotate(tangent, 90, [0,0,1])
-            #print "side vector tagent = {}".format(side_vector)
-            directional_ref_temp = x0 + side_vector
+            print "side vector tagent = {}".format(side_vector)
+            directional_ref_temp = x0 + side_vector 
             #rs.AddPoint(directional_ref_temp)
             target_reference = [x0, x1, directional_ref_temp]
-            #print "target_reference = {}".format(target_reference)
+            print "target_reference = {}".format(target_reference)
             #target_reference = [x0, x1]
             temp_placed_block = rs.OrientObject( temp_block, block_reference, target_reference, flags = 1 + 2)
             scale_factor = rs.Distance(x0, x1)/W
-            #transform = rs.XformScale(scale_factor , x0)
-            local_plane = Rhino.Geometry.Plane(x0, x1, directional_ref_temp)
-            transform = Rhino.Geometry.Transform.Scale(local_plane, scale_factor, 1,1)
-            print transform
-            #rs.InsertBlock2(block_name, transform)
-            #rs.TransformObject(temp_block, transform, copy=True)
-            rs.TransformObject( temp_placed_block, transform, copy = False)
-            collection.append(temp_placed_block)
-            continue
-
             #angle = rs.VectorAngle(tangent, [1,0,0])
             #print angle
             #scale_x = abs(scale_factor * cos(angle))
@@ -82,7 +68,7 @@ def make_sample_blocks():
         rs.DeleteObject(seg)
 
     #restore proejct osnap setting
-    #rs.ProjectOsnaps(enable = original_project_osnap_status)
+    rs.ProjectOsnaps(enable = original_project_osnap_status)
 
     rs.DeleteObject(temp_block)
     rs.EnableRedraw(enable = False)
@@ -129,20 +115,13 @@ def create_block(name, W, D, H):
 
     box_corners = rs.BoundingBox(pts)
     box = rs.AddBox(box_corners)
-    dot = rs.AddText("Sample Panel\n<{}>\nReplace block with better design.".format(name),
-                    EA.get_center(box),
-                    height = 0.5,
-                    font = "Arial",
-                    font_style = 0,
-                    justification = 2 + 131072 )
-    #dot = rs.AddTextDot("Sample Panel <{}>\nReplace Me".format(name), EA.get_center(box))
     insert_pt = rs.AddPoint(pt0)
     ref_pt = rs.AddPoint(ref_pt_coord)
     ref_line_start_pt = [W/2, 0, 0]
     ref_line_end_pt = [W/2, -W, 0]
 
     ref_line = rs.AddLine(ref_line_start_pt, ref_line_end_pt)
-    block_contents = [box, insert_pt, ref_pt, ref_line, dot]
+    block_contents = [box, insert_pt, ref_pt, ref_line]
     block_name = rs.AddBlock(block_contents, insert_pt, name = name, delete_input = True)
     return block_name, pt0, ref_pt_coord
 
