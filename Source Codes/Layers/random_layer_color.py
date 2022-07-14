@@ -18,8 +18,14 @@ def random_layer_color():
     all_layer_names = rs.LayerNames()
     for layer in all_layer_names:
         current_color = rs.LayerColor(layer)
+        print current_color
+        red, green, blue = current_color[0],current_color[1],current_color[2]
+        if red == 0 and green == 0 and blue == 0:
+            rs.LayerColor(layer, color = random_color(layer, use_desaturated_color))
+        """
         if str(current_color) == "Color [A=255, R=0, G=0, B=0]":
             rs.LayerColor(layer, color = random_color(layer, use_desaturated_color))
+        """
 
 def random_color(layer_name, use_desaturated_color):
 

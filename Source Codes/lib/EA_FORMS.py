@@ -233,7 +233,7 @@ def ShowDocLayerSelectionDialog(options,
         OUT.sort()
         #pickedLayers.append(dlg.RunScript())
 
-        print OUT
+        #print OUT
         return OUT
 
     else:

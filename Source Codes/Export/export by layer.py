@@ -3,7 +3,7 @@ import os
 from scriptcontext import doc
 
 
-def export_by_layer():
+def export_by_layer(extension = "3dm"):
 
 
 
@@ -17,7 +17,7 @@ def export_by_layer():
     if not os.path.exists(EA_export_folder):
         os.makedirs(EA_export_folder)
 
-    extension = "3dm"
+    
 
     """
     try this, before explode all block, make a copy of all block instances to a
@@ -53,6 +53,7 @@ def export_by_layer():
 
 
     rs.DeleteObjects(trash_geo)
+    rs.MessageBox(message = "All layer processed", buttons= 0 | 48, title = "Export by Layer")
 
 
 

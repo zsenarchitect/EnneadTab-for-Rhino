@@ -20,17 +20,22 @@ def import_selected_views():
         availible_view_names.sort(key = lambda x: x[0].lower())
     except:
         pass
+    availible_view_names.insert(0, ["<Check me to process all views, ignore selection below>", False])
     res = rs.CheckListBox(items = availible_view_names,
                             message = "select views to import from [{}]".format(filename),
                             title = "view importer")
 
     picked_view_name = []
     for name, status in res:
+        if "Check me" in name and status:
+            picked_view_name = [x.Name for x in f.NamedViews]
+            break
+            
         if status:
             picked_view_name.append(name)
 
 
-
+    rs.EnableRedraw(enable = False)
     for view_info in f.NamedViews:
         if view_info.Name in picked_view_name:
             sc.doc.NamedViews.Add(view_info)

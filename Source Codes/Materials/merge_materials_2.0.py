@@ -84,7 +84,7 @@ def merge_material():
         pass
 
 
-    rs.Command("_Purge _Pause _Material=_Yes _BlockDefinitions=_No _AnnotationStyles=_No _Groups=_No _HatchPatterns=_No _Layers=_No _Linetypes=_No _Textures=_No Environments=_No _Bitmaps=_No _Enter")
+    rs.Command("_Purge _Pause _Materials=_Yes _BlockDefinitions=_No _AnnotationStyles=_No _Groups=_No _HatchPatterns=_No _Layers=_No _Linetypes=_No _Textures=_No Environments=_No _Bitmaps=_No _Enter")
 
     rs.TextOut(message = LOG + "\n\n################\nThe tool will do a material-only purge by the end automatically.", title = "Summery of layer material changes.")
     # rs.MessageBox(message = "For deep cleaning, run purge material by the end.", buttons= 0 | 48, title = "Works are not done yet...")

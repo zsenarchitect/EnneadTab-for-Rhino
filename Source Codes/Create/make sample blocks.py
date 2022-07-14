@@ -13,11 +13,18 @@ def make_sample_blocks():
     base_crv = rs.GetObject(message = "pick base crv, open or closed. If the facade is not facing the direction you like, flip the base crv direction.", filter = rs.filter.curve, preselect = True)
 
     # add block to doc, here use propety box
-    res = rs.PropertyListBox(items = ["Width", "Depth", "Height"], values = [1500, 200, 4500], message = "Enter sample block dimension similar to your spacing, unit in Rhino unit.", title = "EnneadTab")
+    default_width = EA.get_sticky("STICK_WIDTH", 1500)
+    default_depth = EA.get_sticky("STICK_DEPTH", 200)
+    default_height = EA.get_sticky("STICK_HEIGHT", 4500)
+
+    res = rs.PropertyListBox(items = ["Width", "Depth", "Height"], values = [default_width, default_depth, default_height], message = "Enter sample block dimension similar to your spacing, unit in Rhino unit.", title = "EnneadTab")
     print res
     #\nThis should best approximate the division to be used on facade layout.\n\tWidth = horitiontal division spacing\n\tDepth = from FOG to back of mullion\n\tHeight = vertical division spacving
 
     W, D, H = [float(x) for x in res]
+    EA.set_sticky("STICK_WIDTH", W)
+    EA.set_sticky("STICK_DEPTH", D)
+    EA.set_sticky("STICK_HEIGHT", H)
 
     block_name = "EA_layout block_{} x {} x {}".format(W, D, H)
     block_name, insert_pt, ref_pt = create_block(block_name, W, D, H)
@@ -47,6 +54,11 @@ def make_sample_blocks():
             x1 = pts_on_seg[i + 1]
             param = rs.CurveClosestPoint(seg, x0)
             tangent = rs.CurveTangent(seg, param)
+            """
+            above step is actually slightly dangerours, becasue on curve segment the location tangent is actually not the block layout local X direction. But futunealty, the directional ref temp pt used later is only used to determine the up side orientation instead of actual local Y reference for the new block. So it is all safe.
+            """
+
+
             #print "tagent = {}".format(tangent)
             side_vector = rs.VectorRotate(tangent, 90, [0,0,1])
             #print "side vector tagent = {}".format(side_vector)
@@ -148,4 +160,5 @@ def create_block(name, W, D, H):
 
 
 if __name__ == "__main__":
+    rs.EnableRedraw(enable = False)
     make_sample_blocks()

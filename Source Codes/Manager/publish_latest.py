@@ -49,9 +49,9 @@ def publish_latest_toolbar():
             toolbar_details += "\t\t\t\t{}:   {}\n".format(name, rs.ToolbarCollectionPath(name))
 
     rs.TextOut(message = "Current Toolbar Collection\n{}".format(toolbar_details))
-    
-    rs.MessageBox(message = "Publishing Done.\n\nSave 'EnneadTab.rui' file = {}".format(save_res), buttons= 0 | 48, title = "EA monitor")
 
+    #rs.MessageBox(message = "Publishing Done.\n\nSave 'EnneadTab.rui' file = {}".format(save_res), buttons= 0 | 48, title = "EA monitor")
+    EA.toast(message = r'Save "EnneadTab.rui" file = {}'.format(save_res), title = "Publishing Done.")
 
 
 
